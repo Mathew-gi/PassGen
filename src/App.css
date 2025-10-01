@@ -1,0 +1,458 @@
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap");
+
+:root {
+  --bg-color: #121212;
+  --surface-color: #1e1e1e;
+  --primary-color: #00e0a3;
+  --text-color: #e0e0e0;
+  --text-secondary-color: #a0a0a0;
+  --border-color: #333333;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --danger-color: #f44336;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "JetBrains Mono", monospace;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.password-generator {
+  width: 100%;
+  background-color: var(--surface-color);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+}
+
+.main-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.password-input-wrapper {
+  position: relative;
+  flex-grow: 1;
+}
+
+#password-display {
+  width: 100%;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 14px 45px 14px 16px;
+  font-size: 20px;
+  color: var(--text-color);
+  letter-spacing: 1px;
+  outline: none;
+  transition: border-color 0.3s;
+  font-family: "JetBrains Mono", monospace;
+}
+
+#password-display:focus {
+  border-color: var(--primary-color);
+}
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.placeholder-marquee {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  white-space: nowrap;
+  color: #aaa;
+  pointer-events: none;
+
+  animation: marquee 5s linear infinite;
+  animation-play-state: running;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translate(100%, -50%);
+  }
+  100% {
+    transform: translate(-100%, -50%);
+  }
+}
+
+.icon-btn {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background-color: var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, border-color 0.3s;
+  padding: 0;
+}
+
+.icon-btn svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--text-secondary-color);
+  transition: fill 0.3s, transform 0.3s;
+}
+
+.icon-btn:hover {
+  background-color: #383838;
+}
+
+#copy-btn {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 100%;
+  background: transparent;
+  border: none;
+}
+
+#copy-btn:hover svg {
+  fill: var(--text-color);
+}
+
+#settings-toggle.open svg {
+  transform: rotate(45deg);
+}
+
+.strength-meter {
+  width: 100%;
+  height: 6px;
+  background-color: var(--border-color);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.strength-bar {
+  height: 100%;
+  width: 0%;
+  background-color: var(--danger-color);
+  border-radius: 3px;
+  transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.strength-text {
+  text-align: right;
+  font-size: 14px;
+  color: var(--text-secondary-color);
+  height: 18px;
+  margin-bottom: 20px;
+  transition: color 0.4s ease;
+}
+
+.strength-reasons {
+  text-align: right;
+  font-size: 14px;
+  color: var(--text-secondary-color);
+  height: 18px;
+  margin-bottom: 5px;
+  transition: color 0.4s ease;
+}
+
+.settings {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out,
+    padding-top 0.5s ease-in-out, visibility 0.5s;
+}
+
+.settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settings.open {
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+  max-height: 500px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.setting:last-child {
+  margin-bottom: 0;
+}
+.setting label {
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.setting label::after {
+  content: "";
+}
+
+.length-setting {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.length-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+#length-value {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--border-color);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--primary-color);
+  cursor: pointer;
+  border-radius: 50%;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--primary-color);
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: 0.4s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--text-color);
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--primary-color);
+}
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Базовые стили (Desktop-first) у тебя уже есть, ниже — адаптивные правки */
+
+/* --- Планшеты (до 1024px) --- */
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  .app-container {
+    max-width: 460px;
+    padding: 0 10px;
+  }
+
+  #password-display {
+    font-size: 18px;
+    padding: 12px 40px 12px 14px;
+  }
+
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .icon-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* --- Мобильные (до 768px) --- */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .app-container {
+    width: 100vw;
+    padding: 20px 12px;
+    gap: 16px;
+  }
+
+  .password-generator {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .main-controls {
+    flex-wrap: wrap; /* разрешаем перенос */
+    justify-content: flex-end; /* чтобы кнопки во второй строке были справа */
+  }
+
+  .password-input-wrapper {
+    flex: 1 1 100%; /* занимает всю строку */
+    width: 100%;
+  }
+
+  .icon-btn {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto; /* не растягиваем, сохраняем размер */
+  }
+
+  #password-display {
+    font-size: 16px;
+    padding: 12px 40px 12px 14px;
+  }
+
+  .strength-text,
+  .strength-reasons {
+    font-size: 13px;
+    text-align: left;
+  }
+
+  .setting label {
+    font-size: 14px;
+  }
+}
+
+/* --- Очень маленькие устройства (до 480px) --- */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 18px;
+  }
+
+  .password-generator {
+    padding: 12px;
+  }
+
+  #password-display {
+    font-size: 15px;
+    padding: 10px 38px 10px 12px;
+  }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .icon-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .settings-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .setting {
+    flex: 1 1 45%;
+    min-width: 120px;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .setting label {
+    font-size: 13px;
+  }
+
+  .setting label::after {
+    content: attr(data-short);
+  }
+
+  .setting label {
+    /* скрываем длинный текст, но оставляем data-short */
+    font-size: 0;
+  }
+
+  .setting label::after {
+    font-size: 14px;
+  }
+}
