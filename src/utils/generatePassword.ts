@@ -7,56 +7,32 @@ const RUS_LOWERCASE_CHARS = "абвгдеёжзийклмнопрстуфхцч�
 const NUMBER_CHARS = "0123456789";
 const SYMBOL_CHARS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
 
-/**
- * Генерация пароля по настройкам
- */
 export function generatePassword(settings: PasswordSettings): string {
   let availableChars = "";
   const guaranteedChars: string[] = [];
 
-  if (settings.engUppercase) {
-    availableChars += UPPERCASE_CHARS;
-    guaranteedChars.push(
-      UPPERCASE_CHARS[Math.floor(Math.random() * UPPERCASE_CHARS.length)]
-    );
-  }
-  if (settings.engLowercase) {
-    availableChars += LOWERCASE_CHARS;
-    guaranteedChars.push(
-      LOWERCASE_CHARS[Math.floor(Math.random() * LOWERCASE_CHARS.length)]
-    );
-  }
-  if (settings.rusUppercase) {
-    availableChars += RUS_UPPERCASE_CHARS;
-    guaranteedChars.push(
-      RUS_UPPERCASE_CHARS[Math.floor(Math.random() * RUS_UPPERCASE_CHARS.length)]
-    );
-  }
-  if (settings.rusLowercase) {
-    availableChars += RUS_LOWERCASE_CHARS;
-    guaranteedChars.push(
-      RUS_LOWERCASE_CHARS[Math.floor(Math.random() * RUS_LOWERCASE_CHARS.length)]
-    );
-  }
-  if (settings.numbers) {
-    availableChars += NUMBER_CHARS;
-    guaranteedChars.push(
-      NUMBER_CHARS[Math.floor(Math.random() * NUMBER_CHARS.length)]
-    );
-  }
-  if (settings.symbols) {
-    availableChars += SYMBOL_CHARS;
-    guaranteedChars.push(
-      SYMBOL_CHARS[Math.floor(Math.random() * SYMBOL_CHARS.length)]
-    );
-  }
+  const addCategory = (chars: string, enabled: boolean) => {
+    if (!enabled) return;
+    availableChars += chars;
+    // Добавляем гарантированный символ только если ещё есть место
+    if (guaranteedChars.length < settings.length) {
+      guaranteedChars.push(chars[Math.floor(Math.random() * chars.length)]);
+    }
+  };
+
+  addCategory("ABCDEFGHIJKLMNOPQRSTUVWXYZ", settings.engUppercase);
+  addCategory("abcdefghijklmnopqrstuvwxyz", settings.engLowercase);
+  addCategory("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ", settings.rusUppercase);
+  addCategory("абвгдеёжзийклмнопрстуфхцчшщъыьэюя", settings.rusLowercase);
+  addCategory("0123456789", settings.numbers);
+  addCategory("!@#$%^&*()_+-=[]{}|;:,.<>?", settings.symbols);
 
   if (availableChars.length === 0) {
     throw new Error("Не выбран ни один набор символов для генерации пароля.");
   }
 
-  const remainingLength = settings.length - guaranteedChars.length;
-  let passwordArray = [...guaranteedChars];
+  const remainingLength = Math.max(settings.length - guaranteedChars.length, 0);
+  const passwordArray = [...guaranteedChars];
 
   for (let i = 0; i < remainingLength; i++) {
     passwordArray.push(
@@ -64,11 +40,11 @@ export function generatePassword(settings: PasswordSettings): string {
     );
   }
 
-  // 🔀 Перемешиваем символы (Fisher–Yates shuffle)
+  // Тасуем
   for (let i = passwordArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [passwordArray[i], passwordArray[j]] = [passwordArray[j], passwordArray[i]];
   }
 
-  return passwordArray.join("");
+  return passwordArray.slice(0, settings.length).join(""); // на всякий случай
 }
